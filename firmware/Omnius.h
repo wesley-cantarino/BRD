@@ -40,12 +40,17 @@ int serial_return(String procurar)
 
 void test_motor()
 {
-  for(int pos = 10; pos < 20; pos++)
+  for(int pos = nat_angle; pos < max_angle_leg; pos++)
   {
     leg_right.write(pos);
     delay(20);
   }
-  for(int pos = 20; pos > 10; pos--)
+  for(int pos = max_angle_leg; pos > min_angle_leg; pos--)
+  {
+    leg_right.write(pos);
+    delay(20);
+  }
+  for(int pos = min_angle_leg; pos < nat_angle; pos++)
   {
     leg_right.write(pos);
     delay(20);
@@ -53,12 +58,12 @@ void test_motor()
 
   delay(200);
 
-  for(int pos = 90; pos < 110; pos++)
+  for(int pos = nat_angle; pos < max_angle; pos++)
   {
     foot_right.write(pos);
     delay(20);
   }
-  for(int pos = 110; pos > 90; pos--)
+  for(int pos = max_angle; pos > nat_angle; pos--)
   {
     foot_right.write(pos);
     delay(20);
@@ -66,25 +71,31 @@ void test_motor()
 
   delay(200);
 
-  for(int pos = 90; pos < 110; pos++)
+  for(int pos = nat_angle; pos < max_angle_leg; pos++)
   {
     leg_left.write(pos);
     delay(20);
   }
-  for(int pos = 110; pos > 90; pos--)
+  for(int pos = max_angle_leg; pos > min_angle_leg; pos--)
   {
     leg_left.write(pos);
     delay(20);
   }
+  for(int pos = min_angle_leg; pos < nat_angle; pos++)
+  {
+    leg_left.write(pos);
+    delay(20);
+  }
+
 
   delay(200);
 
-  for(int pos = 90; pos < 110; pos++)
+  for(int pos = nat_angle; pos < max_angle; pos++)
   {
     foot_left.write(pos);
     delay(20);
   }
-  for(int pos = 110; pos > 90; pos--)
+  for(int pos = max_angle; pos > nat_angle; pos--)
   {
     foot_left.write(pos);
     delay(20);
@@ -95,10 +106,11 @@ void test_motor()
 
 void natural_position ()
 {
-  leg_left.write(nat_angle_ll);
-  leg_right.write(nat_angle_lr);
-  foot_left.write(nat_angle_fl);
-  foot_right.write(nat_angle_fr);
+  leg_left.write(nat_angle);
+  leg_right.write(nat_angle);
+
+  foot_left.write(nat_angle);
+  foot_right.write(nat_angle);
 
   delay(15);
 }

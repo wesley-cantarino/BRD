@@ -6,10 +6,14 @@ int foot_left_pin = 10;
 
 int buzzer = 8;
 
-int max_angle = 165, min_angle = 15;
-int max_angle_leg = 120, min_angle_leg = 60;
-int nat_angle = 90;
-int nat_angle_lr = 15, nat_angle_ll = 90, nat_angle_fr = 90, nat_angle_fl = 90;
+
+#define max_angle 165
+#define min_angle 15
+
+#define max_angle_leg 140
+#define min_angle_leg 40
+
+#define nat_angle 90
 
 
 //library
@@ -40,7 +44,7 @@ void setup ()
 void loop ()
 {
   //walk_left(2);
-  animation_atention_for_you ();
+  //animation_atention_for_you ();
 
   /***********serial test***********/
   // serial_reading();
@@ -52,5 +56,5 @@ void loop ()
 
   /***********teste basico/************/
   //test_individual_motor(true, false, true, true); //leg, foot , left, right
-  //test_motor();
+  test_motor();
 }
