@@ -202,6 +202,69 @@ void test_individual_motor (bool l, bool f, bool left, bool right, int _timer)
 /********************************************/
 /******************animation*****************/
 /********************************************/
+void walking (bool sentido)
+{
+  if(sentido)
+  {
+    //inclinar para esquerda. se equilibrar em uma perna
+    for(int i = nat_angle; i < walking_angle_foot + nat_angle; i++)
+    {
+      foot_left.write(i);
+      foot_right.write(max_angle);
+      delay(15);
+    }
+
+    //girar corpitiu para frente
+    for(int i = nat_angle; i < walking_angle_leg + nat_angle; i++)
+    {
+      leg_left.write(-i + 180);
+      leg_right.write(-i + 180);
+      foot_right.write(i);
+      delay(15);
+    }
+
+    //se equilibrarnas duas pernas
+    for(int i = walking_angle_foot + nat_angle; i > nat_angle; i--)
+    {
+      foot_left.write(i);
+      delay(15);
+    }
+    foot_right.write(nat_angle);
+
+    //now, segundo passo
+
+    //inclinar para direita. se equilibrar em uma perna
+    for(int i = nat_angle; i < walking_angle_foot + nat_angle; i++)
+    {
+      foot_right.write(-i + 180);
+      foot_left.write(min_angle);
+      delay(15);
+    }
+
+    //girar corpitiu para frente
+    for(int i = nat_angle; i < walking_angle_leg + nat_angle; i++)
+    {
+      leg_right.write(-i + 180);
+      leg_left.write(-i + 180);
+      foot_left.write(i);
+      delay(15);
+    }
+
+    for(int i = walking_angle_foot + nat_angle; i > nat_angle; i--)
+    {
+      foot_left.write(i);
+      delay(15);
+    }
+    foot_right.write(nat_angle);
+
+    natural_position();
+  }
+  else
+  {
+
+  }
+}
+
 void walk_left (int steps)
 {
   for(int i = 0; i < steps; i++)

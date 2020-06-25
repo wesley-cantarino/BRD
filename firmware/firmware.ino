@@ -13,12 +13,15 @@ void setup ()
   foot_left.attach(foot_left_pin);
 
   natural_position();
+  delay(1500);
 }
 
 void loop ()
 {
-  alongamento(2);
+  //alongamento(2);
   //walk_left(2);
+  walking(true);  //andar para frente (true)
+  //walking(false); //andar para frente (true)
 
   /***********serial test***********/
   // serial_reading();
