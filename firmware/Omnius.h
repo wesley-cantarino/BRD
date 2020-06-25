@@ -1,3 +1,34 @@
+/********************************************/
+/****************Basic funtion***************/
+/********************************************/
+
+void natural_position ()
+{
+  leg_left.write(nat_angle);
+  leg_right.write(nat_angle);
+
+  foot_left.write(nat_angle);
+  foot_right.write(nat_angle);
+
+  delay(15);
+}
+
+void bip ()
+{
+  tone(buzzer, 220);
+  delay(200);
+  tone(buzzer, 440);
+  delay(200);
+  tone(buzzer, 660);
+  delay(200);
+
+  noTone(buzzer);
+}
+
+/********************************************/
+/*******************Serial*******************/
+/********************************************/
+
 char r;
 String reading = "";
 
@@ -34,8 +65,9 @@ int serial_return(String procurar)
   }
 }
 
-
-/*#######################################*/
+/********************************************/
+/*********************test*******************/
+/********************************************/
 
 
 void test_motor()
@@ -104,18 +136,7 @@ void test_motor()
   delay(200);
 }
 
-void natural_position ()
-{
-  leg_left.write(nat_angle);
-  leg_right.write(nat_angle);
-
-  foot_left.write(nat_angle);
-  foot_right.write(nat_angle);
-
-  delay(15);
-}
-
-void test_individual_motor (bool l, bool f, bool left, bool right)
+void test_individual_motor (bool l, bool f, bool left, bool right, int _timer)
 {
   if(l)
   {
@@ -123,27 +144,27 @@ void test_individual_motor (bool l, bool f, bool left, bool right)
     {
       if(left)
         leg_left.write(pos);
-      //if(right)
-        //leg_right.write(pos);
-      delay(25);
+      if(right)
+        leg_right.write(pos);
+      delay(_timer);
     }
 
     for(int pos = max_angle_leg; pos > min_angle_leg; pos--)
     {
       if(left)
         leg_left.write(pos);
-      // if(right)
-      //   foot_right.write(pos);
-      delay(25);
+       if(right)
+        leg_right.write(pos);
+      delay(_timer);
     }
 
     for(int pos = min_angle_leg; pos < nat_angle; pos++)
     {
       if(left)
         leg_left.write(pos);
-      //if(right)
-        //leg_right.write(pos);
-      delay(25);
+      if(right)
+        leg_right.write(pos);
+      delay(_timer);
     }
   }
 
@@ -155,7 +176,7 @@ void test_individual_motor (bool l, bool f, bool left, bool right)
         foot_left.write(pos);
       if(right)
         foot_right.write(pos);
-      delay(25);
+      delay(_timer);
     }
 
     for(int pos = max_angle; pos > min_angle; pos--)
@@ -164,7 +185,7 @@ void test_individual_motor (bool l, bool f, bool left, bool right)
         foot_left.write(pos);
       if(right)
         foot_right.write(pos);
-      delay(25);
+      delay(_timer);
     }
 
     for(int pos = min_angle; pos < nat_angle; pos++)
@@ -173,26 +194,35 @@ void test_individual_motor (bool l, bool f, bool left, bool right)
         foot_left.write(pos);
       if(right)
         foot_right.write(pos);
-      delay(25);
+      delay(_timer);
     }
   }
 }
 
-void bip ()
+/********************************************/
+/******************animation*****************/
+/********************************************/
+void walk_left (int steps)
 {
-  tone(buzzer, 220);
-  delay(200);
-  tone(buzzer, 440);
-  delay(200);
-  tone(buzzer, 660);
-  delay(200);
+  for(int i = 0; i < steps; i++)
+  {
+    for(int pos = nat_angle; pos > min_angle; pos--)
+    {
+      foot_left.write(pos);
+      foot_right.write(-pos + 180);
+      delay(35);
+    }
 
-  noTone(buzzer);
+    for(int pos = min_angle; pos < nat_angle; pos++)
+    {
+      foot_left.write(pos);
+      foot_right.write(-pos + 180);
+      delay(35);
+    }
+  }
 }
 
-/******************animation****************/
-
-void walk_left (int steps)
+void alongamento (int steps)
 {
   for(int i = 0; i < steps; i++)
   {
@@ -219,29 +249,10 @@ void walk_left (int steps)
       delay(25);
     }
 
+    test_individual_motor(true, true, true, true, 35);
   }
 }
 
-void animation_atention_for_you()
-{
-  for(int i = 0; i < 2; i++)
-  {
-    test_individual_motor(false, true, true, true);
-  }
-
-  delay(500);
-
-  for(int i = 0; i < 8; i++)
-  {
-    test_motor();
-  }
-
-  delay(500);
-
-  for(int i = 0; i < 2; i++)
-  {
-    walk_left(2);
-  }
-
-  delay(500);
-}
+/********************************************/
+/******************new_here*****************/
+/********************************************/

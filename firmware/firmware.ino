@@ -1,30 +1,4 @@
-int leg_right_pin = 7;
-int leg_left_pin = 11;
-
-int foot_right_pin = 6;
-int foot_left_pin = 10;
-
-int buzzer = 8;
-
-
-#define max_angle 165
-#define min_angle 15
-
-#define max_angle_leg 140
-#define min_angle_leg 40
-
-#define nat_angle 90
-
-
-//library
-#include <Servo.h>
-
-Servo leg_right;
-Servo leg_left;
-
-Servo foot_right;
-Servo foot_left;
-
+#include "user_default.h"
 #include "Omnius.h"
 
 void setup ()
@@ -43,8 +17,8 @@ void setup ()
 
 void loop ()
 {
+  alongamento(2);
   //walk_left(2);
-  //animation_atention_for_you ();
 
   /***********serial test***********/
   // serial_reading();
@@ -55,6 +29,6 @@ void loop ()
   // }
 
   /***********teste basico/************/
-  //test_individual_motor(true, false, true, true); //leg, foot , left, right
-  test_motor();
+  //test_individual_motor(true, true, true, true, 35); //leg, foot , left, right, time
+  //test_motor();
 }
