@@ -15,7 +15,7 @@ int buzzer = 8;
 
 #define nat_angle 90
 
-#define walking_angle_foot 40
+#define walking_angle_foot 25
 #define walking_angle_leg 40
 
 //library

@@ -19,9 +19,16 @@ void setup ()
 void loop ()
 {
   //alongamento(2);
+
+  //falta muito
   //walk_left(2);
+
+  //esta quase
   walking(true);  //andar para frente (true)
+  delay(20);
   //walking(false); //andar para frente (true)
+
+  //walk();
 
   /***********serial test***********/
   // serial_reading();
