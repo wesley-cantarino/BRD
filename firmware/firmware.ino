@@ -1,3 +1,6 @@
+//Nao consegue andar para tras
+//Escrever biblioteca ultrassonico
+
 #include "user_default.h"
 #include "Omnius.h"
 
@@ -13,22 +16,30 @@ void setup ()
   foot_left.attach(foot_left_pin);
 
   natural_position();
-  delay(1500);
+  melody();
+  delay(2000);
 }
 
 void loop ()
 {
   //alongamento(2);
 
-  //falta muito
-  //walk_left(2);
-
-  //esta quase
-  walking(true);  //andar para frente (true)
-  delay(20);
+  //walking(true, 20);  //andar para frente (true)
+  //delay(20);
   //walking(false); //andar para frente (true)
 
-  //walk();
+  //melody();
+
+  //ultrassonico();
+
+  /**********Acao***************/
+  //A cada 5 passos dar uma alongada
+  alongamento(1);
+  for(int i = 0; i < 5; i++)
+  {
+    walking(true, 20);  //andar para frente (true)
+    delay(20);
+  }
 
   /***********serial test***********/
   // serial_reading();

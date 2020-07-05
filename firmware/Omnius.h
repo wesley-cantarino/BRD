@@ -13,16 +13,51 @@ void natural_position ()
   delay(15);
 }
 
+void ultrassonico ()
+{
+  long microsec = ultrasonic.timing();
+  float cmMsec = ultrasonic.convert(microsec, Ultrasonic::CM);
+  Serial.println(cmMsec);
+}
+
 void bip ()
 {
   tone(buzzer, 220);
-  delay(200);
+  delay(100);
   tone(buzzer, 440);
-  delay(200);
+  delay(110);
   tone(buzzer, 660);
-  delay(200);
+  delay(150);
 
   noTone(buzzer);
+}
+
+void melody ()
+{
+  int melody[] =
+  {
+    NOTE_C4, NOTE_G3, NOTE_G3, NOTE_A3, NOTE_G3, 0, NOTE_B3, NOTE_C4
+  };
+
+  // note durations: 4 = quarter note, 8 = eighth note, etc.:
+  int noteDurations[] =
+  {
+    4, 8, 8, 4, 4, 4, 4, 4
+  };
+
+  for (int thisNote = 0; thisNote < 8; thisNote++)
+  {
+    // to calculate the note duration, take one second divided by the note type.
+    //e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
+    int noteDuration = 1000 / noteDurations[thisNote];
+    tone(buzzer, melody[thisNote], noteDuration);
+
+    // to distinguish the notes, set a minimum time between them.
+    // the note's duration + 30% seems to work well:
+    int pauseBetweenNotes = noteDuration * 1.30;
+    delay(pauseBetweenNotes);
+    noTone(buzzer);
+  }
 }
 
 /********************************************/
@@ -202,41 +237,8 @@ void test_individual_motor (bool l, bool f, bool left, bool right, int _timer)
 /********************************************/
 /******************animation*****************/
 /********************************************/
-void walk ()
-{
-  for(int i = nat_angle; i < max_angle_leg; i++)
-  {
-    leg_left.write(-i + 180);
-    delay(20);
-  }
-  for(int i = nat_angle; i < walking_angle_foot + nat_angle; i++)
-  {
-    foot_left.write(i);
-    foot_right.write(i);
 
-    int j = map(i, nat_angle, walking_angle_foot + nat_angle, nat_angle, max_angle_leg);
-    leg_right.write(-j + 180);
-    delay(20);
-  }
-
-  delay(200);
-
-  for(int i = walking_angle_foot + nat_angle; i > nat_angle; i--)
-  {
-    foot_left.write(i);
-    delay(20);
-  }
-  for(int i = max_angle_leg; i > nat_angle; i--)
-  {
-    leg_left.write(-i + 180);
-    delay(20);
-  }
-
-
-  //delay(500000);
-}
-
-void walking (bool sentido)
+void walking (bool sentido, int tempo)
 {
   if(sentido)
   {
@@ -245,7 +247,7 @@ void walking (bool sentido)
     {
       foot_left.write(i);
       foot_right.write(max_angle);
-      delay(15);
+      delay(tempo);
     }
 
     //girar corpitiu para frente
@@ -254,14 +256,14 @@ void walking (bool sentido)
       leg_left.write(-i + 180);
       leg_right.write(-i + 180);
       foot_right.write(i);
-      delay(15);
+      delay(tempo);
     }
 
     //se equilibrarnas duas pernas
     for(int i = walking_angle_foot + nat_angle; i > nat_angle; i--)
     {
       foot_left.write(i);
-      delay(15);
+      delay(tempo);
     }
     foot_right.write(nat_angle);
 
@@ -273,28 +275,34 @@ void walking (bool sentido)
     {
       foot_right.write(-i + 180 - 10); //correção
       foot_left.write(min_angle);
-      delay(15);
+      delay(tempo);
     }
     foot_left.write(nat_angle);
 
     //delay(50000);
     //girar corpitiu para frente
-    for(int i = walking_angle_leg + nat_angle; i > -walking_angle_leg * 0.5 + nat_angle; i--)
+    for(int i = walking_angle_leg + nat_angle; i > -walking_angle_leg + nat_angle; i--)
     {
       leg_right.write(-i + 180);
       leg_left.write(-i + 180);
       //foot_left.write(i);
-      delay(15);
+      delay(tempo);
     }
 
+    //delay(5000);
     //voltar ao normal
     for(int i = walking_angle_foot + nat_angle; i > nat_angle; i--)
     {
       foot_right.write(-i + 180);
-      delay(15);
+
+      int j = map(i, walking_angle_foot + nat_angle, nat_angle, -walking_angle_leg + nat_angle, nat_angle);
+      leg_right.write(-j + 180);
+      leg_left.write(-j + 180);
+
+      delay(tempo);
     }
 
-    //natural_position();
+    natural_position();
     //delay(500000);
   }
   else
