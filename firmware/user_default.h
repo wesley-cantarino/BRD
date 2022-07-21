@@ -1,17 +1,17 @@
 int leg_right_pin = 7;
-int leg_left_pin = 11;
+int leg_left_pin = 10;
 
 int foot_right_pin = 6;
-int foot_left_pin = 10;
+int foot_left_pin = 11;
 
 int buzzer = 8;
 
+#define TRIGGER_PIN  4
+#define ECHO_PIN     5
+
 #include <Ultrasonic.h>
-
-#define TRIGGER_PIN  2
-#define ECHO_PIN     3
-
 Ultrasonic ultrasonic(TRIGGER_PIN, ECHO_PIN);
+int distance;
 
 #define max_angle 165
 #define min_angle 15

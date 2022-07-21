@@ -17,11 +17,12 @@ void setup ()
 
   natural_position();
   melody();
-  delay(2000);
+  delay(2000); //2s
 }
 
 void loop ()
 {
+  ///*
   //alongamento(2);
 
   //walking(true, 20);  //andar para frente (true)
@@ -31,8 +32,10 @@ void loop ()
   //melody();
 
   //ultrassonico();
+  //*/
 
   /**********Acao***************/
+  /*
   //A cada 5 passos dar uma alongada
   alongamento(1);
   for(int i = 0; i < 5; i++)
@@ -40,6 +43,7 @@ void loop ()
     walking(true, 20);  //andar para frente (true)
     delay(20);
   }
+  */
 
   /***********serial test***********/
   // serial_reading();
@@ -50,6 +54,9 @@ void loop ()
   // }
 
   /***********teste basico/************/
-  //test_individual_motor(true, true, true, true, 35); //leg, foot , left, right, time
+  ///*
+  //test_individual_motor(true, false, false, true, 35); //leg, foot , left, right, time
   //test_motor();
+  test_individual_motor(false, true, true, true, 40); //leg, foot , left, rightt, time
+  //*/
 }

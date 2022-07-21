@@ -15,9 +15,8 @@ void natural_position ()
 
 void ultrassonico ()
 {
-  long microsec = ultrasonic.timing();
-  float cmMsec = ultrasonic.convert(microsec, Ultrasonic::CM);
-  Serial.println(cmMsec);
+  distance = ultrasonic.read();
+  Serial.println(distance);
 }
 
 void bip ()
