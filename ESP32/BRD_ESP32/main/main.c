@@ -14,16 +14,22 @@ Autores: Caio e Wesley
 #include "driver/ledc.h"
 #include "sdkconfig.h"
 #include "esp_log.h"
+#include "esp_err.h"
 
 #include "iot_servo.h"
+#include "ultrasonic.h"
 
-//Pinos
+//Pinoss
 #define SERVO_CH0_PIN 14
 #define SERVO_CH1_PIN 27
 #define SERVO_CH2_PIN 26
 #define SERVO_CH3_PIN 25
 
 #define ESP32Buzzer 15
+
+#define MAX_DISTANCE_CM 500 // 5m max
+#define TRIGGER_GPIO 17 //rx2
+#define ECHO_GPIO 16    //tx2
 
 //Canais
 #define LEDC_CHANNEL_0 1
@@ -89,7 +95,15 @@ void motores_teste()
 }
 
 //buzzer
-const uint16_t notes[]  ={
+//A frequência sonora da nota dó é de 264Hz //39
+//A frequência sonora da nota ré é de 297Hz //41
+//A frequência sonora da nota mi é de 330Hz //43
+//A frequência sonora da nota fá é de 352Hz
+//A frequência sonora da nota sol é de 396Hz
+//A frequência sonora da nota lá é de 440Hz //48
+//A frequência sonora da nota si é de 495Hz
+
+const uint16_t notes[]  = {
 	0,31,33,35,37,39,41,44,46,49,52,55,58,62,65,69,73,78,82,87,93,98,104,110,117,123,131,139,147,156,165,175,185,196,208,220,
 	233,247,262,277,294,311,330,349,370,392,415,440,466,494,523,554,587,622,659,698,740,784,831,880,932,988,1047,1109,1175,1245,1319,1397,1480,1568,1661,
 	1760,1865,1976,2093,2217,2349,2489,2637,2794,2960,3136,3322,3520,3729,3951,4186,4435,4699,4978};
@@ -115,21 +129,56 @@ void esp32_beep(unsigned char key_num, unsigned char dur_hms)
 	ledc_channel.timer_sel  = LEDC_TIMER_1;
 
 	ledc_channel_config(&ledc_channel);
-	vTaskDelay(pdMS_TO_TICKS(dur_hms*100));
+	vTaskDelay(pdMS_TO_TICKS(dur_hms*50)); //estava em 100
 	ledc_stop(LEDC_HIGH_SPEED_MODE,LEDC_HS_CH0_CHANNEL,0);
+}
+
+ultrasonic_sensor_t sensor = {
+        .trigger_pin = TRIGGER_GPIO,
+        .echo_pin = ECHO_GPIO
+};
+
+void ultrasonic ()
+{
+    float distance;
+    esp_err_t res = ultrasonic_measure(&sensor, MAX_DISTANCE_CM, &distance);
+    if (res != ESP_OK)
+    {
+        printf("Error %d: ", res);
+        switch (res)
+        {
+            case ESP_ERR_ULTRASONIC_PING:
+                printf("Cannot ping (device is in invalid state)\n");
+                break;
+            case ESP_ERR_ULTRASONIC_PING_TIMEOUT:
+                printf("Ping timeout (no device found)\n");
+                break;
+            case ESP_ERR_ULTRASONIC_ECHO_TIMEOUT:
+                printf("Echo timeout (i.e. distance too big)\n");
+                break;
+            default:
+                printf("%s\n", esp_err_to_name(res));
+        }
+    }
+    else
+        printf("Distance: %0.04f m\n", distance);
 }
 
 void app_main(void)
 {
     iot_servo_init(LEDC_LOW_SPEED_MODE, &servo_cfg);
-    
+
+    esp32_beep(39, 2);
+    esp32_beep(43, 2);
+    esp32_beep(50, 1);
+    esp32_beep(55, 1);
+
+    ultrasonic_init(&sensor);
+
     while(1)
     {
-        //motores_teste();
-
-        esp32_beep(10, 10);
-        esp32_beep(50, 20);
-        esp32_beep(80, 30);
-        esp32_beep(100, 20);
+        motores_teste();
+        //ultrasonic();
+        //vTaskDelay(100 / portTICK_RATE_MS);
     }
 }
