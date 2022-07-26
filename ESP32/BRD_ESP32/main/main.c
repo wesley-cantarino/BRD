@@ -21,12 +21,13 @@ Autores: Caio e Wesley
 
 //Pinoss
 #define SERVO_CH0_PIN 14
-#define SERVO_CH1_PIN 27
+#define SERVO_CH1_PIN 25
 #define SERVO_CH2_PIN 26
-#define SERVO_CH3_PIN 25
+#define SERVO_CH3_PIN 27
 
 #define ESP32Buzzer 15
 
+float distance;
 #define MAX_DISTANCE_CM 500 // 5m max
 #define TRIGGER_GPIO 17 //rx2
 #define ECHO_GPIO 16    //tx2
@@ -68,6 +69,10 @@ servo_config_t servo_cfg = {
     .channel_number = 4,
 } ;
 
+
+
+
+/******************start_FUNCOES_BASICAS******************/
 //Testar os servos
 void motores_teste()
 {
@@ -79,7 +84,7 @@ void motores_teste()
         iot_servo_write_angle(LEDC_LOW_SPEED_MODE, foot_right, angle);
         iot_servo_write_angle(LEDC_LOW_SPEED_MODE, foot_left, angle);
             
-        ESP_LOGI("INFO", "Aumentando");
+        //ESP_LOGI("INFO", "Aumentando");
         vTaskDelay(100 / portTICK_RATE_MS);
     }
     for (angle = 180; angle > 0; angle--)
@@ -89,7 +94,7 @@ void motores_teste()
         iot_servo_write_angle(LEDC_LOW_SPEED_MODE, foot_right, angle);
         iot_servo_write_angle(LEDC_LOW_SPEED_MODE, foot_left, angle);
 
-        ESP_LOGI("INFO", "Diminuindo");
+        //ESP_LOGI("INFO", "Diminuindo");
         vTaskDelay(100 / portTICK_RATE_MS);
     }
 }
@@ -140,7 +145,6 @@ ultrasonic_sensor_t sensor = {
 
 void ultrasonic ()
 {
-    float distance;
     esp_err_t res = ultrasonic_measure(&sensor, MAX_DISTANCE_CM, &distance);
     if (res != ESP_OK)
     {
@@ -164,6 +168,49 @@ void ultrasonic ()
         printf("Distance: %0.04f m\n", distance);
 }
 
+/******************END_FUNCOES_BASICAS******************/
+
+
+void alongamento ()
+{
+    //subir
+    printf("Subir\n");
+    for (float ang = 83; ang < 160; ang = ang + 0.5)
+    {
+        iot_servo_write_angle(LEDC_LOW_SPEED_MODE, foot_right, ang);
+        iot_servo_write_angle(LEDC_LOW_SPEED_MODE, foot_left, ang);
+        vTaskDelay(50 / portTICK_RATE_MS);
+    }
+
+    //descer
+    printf("Descer\n");
+    for (float ang = 160; ang > 83; ang = ang - 0.5)
+    {
+        iot_servo_write_angle(LEDC_LOW_SPEED_MODE, foot_right, ang);
+        iot_servo_write_angle(LEDC_LOW_SPEED_MODE, foot_left, ang);
+        vTaskDelay(50 / portTICK_RATE_MS);
+    }
+
+    //subir
+    printf("Subir\n");
+    for (float ang = 83; ang > 20; ang = ang - 0.5)
+    {
+        iot_servo_write_angle(LEDC_LOW_SPEED_MODE, foot_right, ang);
+        iot_servo_write_angle(LEDC_LOW_SPEED_MODE, foot_left, ang);
+        vTaskDelay(50 / portTICK_RATE_MS);
+    }
+
+    //descer
+    printf("Descer\n");
+    for (float ang = 20; ang < 83; ang = ang + 0.5)
+    {
+        iot_servo_write_angle(LEDC_LOW_SPEED_MODE, foot_right, ang);
+        iot_servo_write_angle(LEDC_LOW_SPEED_MODE, foot_left, ang);
+        vTaskDelay(50 / portTICK_RATE_MS);
+    }
+}
+
+
 void app_main(void)
 {
     iot_servo_init(LEDC_LOW_SPEED_MODE, &servo_cfg);
@@ -177,8 +224,10 @@ void app_main(void)
 
     while(1)
     {
-        motores_teste();
-        //ultrasonic();
-        //vTaskDelay(100 / portTICK_RATE_MS);
+        //motores_teste(); //nao recomendado de se usar
+
+        alongamento();
+        ultrasonic();
+        vTaskDelay(100 / portTICK_RATE_MS);
     }
 }
