@@ -20,6 +20,12 @@ BRD_ESP32_BINARY_DIR:STATIC=E:/project/BRD/ESP32/BRD_ESP32/build
 //Value Computed by CMake
 BRD_ESP32_SOURCE_DIR:STATIC=E:/project/BRD/ESP32/BRD_ESP32
 
+//No help, variable specified on the command line.
+CCACHE_ENABLE:UNINITIALIZED=1
+
+//Path to a program.
+CCACHE_FOUND:FILEPATH=C:/Users/wesle/.espressif/tools/ccache/4.3/ccache-4.3-windows-64/ccache.exe
+
 //Path to a program.
 CMAKE_ADDR2LINE:FILEPATH=C:/Users/wesle/.espressif/tools/xtensa-esp32-elf/esp-2021r2-patch3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-addr2line.exe
 

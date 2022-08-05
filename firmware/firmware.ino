@@ -29,7 +29,7 @@ void loop ()
   //delay(20);
   //walking(false); //andar para frente (true)
 
-  //melody();
+  melody();
 
   //ultrassonico();
   //*/
@@ -57,6 +57,6 @@ void loop ()
   ///*
   //test_individual_motor(true, false, false, true, 35); //leg, foot , left, right, time
   //test_motor();
-  test_individual_motor(false, true, true, true, 40); //leg, foot , left, rightt, time
+  //test_individual_motor(false, true, true, true, 40); //leg, foot , left, rightt, time
   //*/
 }

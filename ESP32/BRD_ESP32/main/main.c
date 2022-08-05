@@ -211,6 +211,15 @@ void alongamento ()
 }
 
 
+#define BLINK_GPIO 2
+#define BUTTON_GPIO 0
+
+void task_alonga(void *pvParameters);
+void task_sonzim(void *pvParameters);
+
+QueueHandle_t alongaQ;
+
+
 void app_main(void)
 {
     iot_servo_init(LEDC_LOW_SPEED_MODE, &servo_cfg);
@@ -222,12 +231,95 @@ void app_main(void)
 
     ultrasonic_init(&sensor);
 
-    while(1)
-    {
-        //motores_teste(); //nao recomendado de se usar
 
-        alongamento();
-        ultrasonic();
-        vTaskDelay(100 / portTICK_RATE_MS);
+    gpio_pad_select_gpio(BLINK_GPIO); // Configura o pino como IO
+    gpio_set_direction(BLINK_GPIO,GPIO_MODE_OUTPUT); // Configura o IO como saida
+
+    gpio_pad_select_gpio(BUTTON_GPIO); // Configura o pino como IO
+    gpio_set_direction(BUTTON_GPIO,GPIO_MODE_INPUT); // Configura o IO como entrada
+
+    alongaQ = xQueueCreate(2, sizeof(int));
+
+
+    xTaskCreate(task_alonga,"Task alongamento",1024,NULL,1,NULL);
+    xTaskCreate(task_sonzim,"Task buzer",1024,NULL,1,NULL);
+
+
+}
+
+void task_alonga(void *pvParameters)
+{
+    int i=0;
+	
+    for(;;)
+    {
+        xQueueReceive(alongaQ,&i,portMAX_DELAY);
+		
+        if(i==1)
+        {
+            printf("Alongando pra esquerda!!\r\n");
+            for (float ang = 83; ang < 160; ang = ang + 0.5)
+            {
+                printf("ang ++\r\n");
+                //iot_servo_write_angle(LEDC_LOW_SPEED_MODE, foot_right, ang);
+                //iot_servo_write_angle(LEDC_LOW_SPEED_MODE, foot_left, ang);
+                vTaskDelay(50 / portTICK_RATE_MS);
+            }
+
+            //descer
+            printf("Descer\n");
+            for (float ang = 160; ang > 83; ang = ang - 0.5)
+            {
+                printf("ang --\r\n");
+                //iot_servo_write_angle(LEDC_LOW_SPEED_MODE, foot_right, ang);
+                //iot_servo_write_angle(LEDC_LOW_SPEED_MODE, foot_left, ang);
+                vTaskDelay(50 / portTICK_RATE_MS);
+            }
+        }
+        /*
+        else
+        {
+            printf("Alongando pra direita\n\r");
+
+            //subir
+            printf("Subir\n");
+            for (float ang = 83; ang > 20; ang = ang - 0.5)
+            {
+        //         iot_servo_write_angle(LEDC_LOW_SPEED_MODE, foot_right, ang);
+        //         iot_servo_write_angle(LEDC_LOW_SPEED_MODE, foot_left, ang);
+                vTaskDelay(50 / portTICK_RATE_MS);
+            }
+
+        //     //descer
+            printf("Descer\n");
+            for (float ang = 20; ang < 83; ang = ang + 0.5)
+            {
+                //iot_servo_write_angle(LEDC_LOW_SPEED_MODE, foot_right, ang);
+                //iot_servo_write_angle(LEDC_LOW_SPEED_MODE, foot_left, ang);
+                vTaskDelay(50 / portTICK_RATE_MS);
+            }
+        }*/
+		
+        vTaskDelay(1);
+    }
+}
+
+void task_sonzim(void *pvParameters)
+{
+    int i = 0;
+    for(;;)
+    {
+        //while(gpio_get_level(BUTTON_GPIO) == 0){}
+
+        printf("Som on!\r\n");
+			
+        i = rand()%2;
+        
+        //printf("val i is %d \n", i);
+
+        xQueueSendToFront(alongaQ, &i,0);
+
+        vTaskDelay(10);
+        
     }
 }
